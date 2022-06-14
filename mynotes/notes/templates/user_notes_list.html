@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Projects{% endblock %}
+
+{% block content %}
+{% if notes %}
+{% for note in notes %}
+<hr/>
+<a href="{% url 'note' note.id %}"><strong>Name:</strong> {{ note.title }}</a>
+{% endfor %}
+{% else %}
+<p>No notes</p>
+{% endif %}
+{% endblock %}

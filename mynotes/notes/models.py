@@ -6,6 +6,7 @@ from django.template.defaultfilters import truncatechars
 from django.urls import reverse
 # from PIL import Image
 from django.contrib.auth.models import User
+from tinymce.models import HTMLField
 
 
 # Create your models here.
@@ -36,7 +37,7 @@ class Category(models.Model):
 class Notes(models.Model):
     title = models.CharField('Title name', max_length=255, help_text='Enter title')
     # kolkas bus textfield, veliau pakeisiu i html
-    note = models.TextField('Note', help_text='enter your note here')
+    note = HTMLField('Description', null=True)
     date_created = models.DateField(auto_now_add=True, null=True)
     author = models.ForeignKey(User, verbose_name="User", on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
