@@ -3,9 +3,13 @@
 {% block title %}Notes{% endblock %}
 
 {% block content %}
+<!--{% if notes.cover %}-->
+<!--<img src="{{ notes.cover.url }}" class="card-img-top" alt="...">-->
+<!--{% endif %}-->
 
 
     <h1>{{ note.title }}</h1>
-    <h3>{{ note.note }}</h3>
+    <h3 style="color:#ff1a1a">{{ note.note | safe }}</h3>
+    <h5>{{ note.date_created }}</h5>
 
 {% endblock %}

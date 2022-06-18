@@ -1,16 +1,9 @@
 {% extends 'base.html' %}
 
-{% block title %}Notes{% endblock %}
+{% block title %}Home{% endblock %}
 
 {% block content %}
-
-{% for note in notes %}
-    <h1>
-        <a href="{{ note.id }}">{{ note.title }}</a>
-    </h1>
-    <h3>{{ note.note }}</h3>
-    <br>
-    <br>
-    <hr>
-{% endfor %}
+<div>
+    <h3 style="text-align: center">Hello {{ user.get_username }}</h3>
+</div>
 {% endblock %}

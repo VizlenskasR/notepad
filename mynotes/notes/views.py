@@ -1,20 +1,22 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.views import generic
-from .models import Notes
+from .models import Notes, Category
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_protect
 
 
 
 # Create your views here.
-class NoteListView(generic.ListView):
+# notes classes
+class NoteListView(LoginRequiredMixin, generic.ListView):
     model = Notes
     template_name = 'note_list.html'
     context_object_name = 'notes'
 
 
-class UserNotesListView(generic.ListView):
+class UserNotesListView(LoginRequiredMixin, generic.ListView):
     model = Notes
     template_name = 'user_notes_list.html'
     context_object_name = 'notes'
@@ -23,10 +25,30 @@ class UserNotesListView(generic.ListView):
         return Notes.objects.filter(author=self.request.user)
 
 
-class NoteDetailView(generic.DetailView):
+class NoteCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Notes
+    fields = ['title', 'note', 'category']
+    success_url = "/notes/"
+    template_name = 'note_form.html'
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+class NoteDetailView(LoginRequiredMixin, generic.DetailView):
     model = Notes
     template_name = 'note.html'
     context_object_name = 'note'
+
+
+#categories  classes
+class CategoryCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Category
+    template_name = 'create_category.html'
+    context_object_name = 'create_category'
+    success_url = "/notes/"
+
+    fields = '__all__'
 
 
 @csrf_protect
