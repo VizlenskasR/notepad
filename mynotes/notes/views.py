@@ -1,19 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.views import generic
 from .models import Notes, Category
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_protect
-
-
-
-# Create your views here.
-# classes related to notes
-# class NoteListView(LoginRequiredMixin, generic.ListView):
-#     model = Notes
-#     template_name = 'note_list.html'
-#     context_object_name = 'notes'
 
 
 class UserNotesListView(LoginRequiredMixin, generic.ListView):
@@ -47,7 +39,7 @@ class NoteDetailView(LoginRequiredMixin, UserPassesTestMixin, generic.DetailView
 class NoteUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
     model = Notes
     fields = ['title', 'note', 'category']
-    success_url = "/notes/user_notes/"
+    success_url = "/notes/"
     template_name = 'note_form.html'
 
     def form_valid(self, form):
@@ -69,22 +61,6 @@ class NoteDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView
         note = self.get_object()
         return self.request.user == note.author
 
-#classes related to categories
-# class CaregoryListView(LoginRequiredMixin, generic.ListView):
-#     model = Category
-#     template_name = 'category_list.html'
-#     context_object_name = 'categories'
-#     success_url = "/notes/"
-#
-# class NoteDetailView(LoginRequiredMixin, UserPassesTestMixin, generic.DetailView):
-#     model = Category
-#     template_name = 'category.html'
-#     context_object_name = 'category'
-
-    # def test_func(self):
-    #     notes = self.get_object()
-    #     return self.request.user == notes.author
-
 
 
 class CategoryCreateView(LoginRequiredMixin, generic.CreateView):
@@ -99,24 +75,19 @@ class CategoryCreateView(LoginRequiredMixin, generic.CreateView):
 @csrf_protect
 def register(request):
     if request.method == "POST":
-        # pasiimame reikšmes iš registracijos formos
         username = request.POST['username']
         email = request.POST['email']
         password = request.POST['password']
         password2 = request.POST['password2']
-        # tikriname, ar sutampa slaptažodžiai
         if password == password2:
-            # tikriname, ar neužimtas username
             if User.objects.filter(username=username).exists():
                 messages.error(request, f'Vartotojo vardas {username} užimtas!')
                 return redirect('register')
             else:
-                # tikriname, ar nėra tokio pat email
                 if User.objects.filter(email=email).exists():
                     messages.error(request, f'Vartotojas su el. paštu {email} jau užregistruotas!')
                     return redirect('register')
                 else:
-                    # jeigu viskas tvarkoje, sukuriame naują vartotoją
                     User.objects.create_user(username=username, email=email, password=password)
                     return redirect('user_notes')
 
@@ -124,4 +95,11 @@ def register(request):
             messages.error(request, 'Slaptažodžiai nesutampa!')
             return redirect('register')
     return render(request, 'registration/register.html')
+
+
+def search(request):
+    query = request.GET.get('query')
+    search_results = Notes.objects.filter(Q(title__icontains=query))
+    return render(request, 'search.html', {'notes': search_results, 'query': query})
+
 

@@ -8,14 +8,14 @@
 <!--{% endif %}-->
 
 
-    <h1>{{ note.title }}</h1>
-    <h3 style="color:#ff1a1a">{{ note.note | safe }}</h3>
-    <h5>{{ note.date_created }}</h5>
+    <h1 style="padding-bottom: 20px">{{ note.title }}</h1>
+    <h5>{{ note.note | safe }}</h5>
+    <p style="font-size: small">{{ note.date_created }}</p>
 
 {% if note.author == user %}
 <div>
     <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'note_update' note.id %}">Edit</a>
-    <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'note_delete' note.id %}">Delete</a>
+    <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'note_delete' note.id %}?next=/notes/">Delete</a>
 
 
 </div>

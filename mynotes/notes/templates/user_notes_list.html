@@ -7,7 +7,7 @@
 <h3 style="padding-bottom: 40px">Hello {{ user.get_username }}, here is your notes:</h3>
 {% if notes %}
 {% for note in notes %}
-    <a href="{% url 'note' note.id %}"><strong>Name:</strong> {{ note.title }}</a>
+    <a href="{% url 'note' note.id %}"> {{ note.title }}</a>
     <hr/>
 {% endfor %}
 {% else %}

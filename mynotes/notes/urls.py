@@ -11,6 +11,6 @@ urlpatterns = [
     path('new_category/', views.CategoryCreateView. as_view(), name="new_category"),
     path('note/<int:pk>/update', views.NoteUpdateView.as_view(), name="note_update"),
     path('note/<int:pk>/delete', views.NoteDeleteView.as_view(), name='note_delete'),
-    # path('categories/', views.CaregoryListView.as_view(), name="user_categories"),
+    path('search/', views.search, name='search'),
 
 ]
