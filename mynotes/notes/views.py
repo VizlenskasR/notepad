@@ -53,7 +53,7 @@ class NoteUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView
 
 class NoteDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
     model = Notes
-    success_url = "/notes/user_notes/"
+    success_url = "/notes/"
     template_name = 'note_delete.html'
     context_object_name = 'note'
 
