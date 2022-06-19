@@ -7,6 +7,7 @@ from tinymce.models import HTMLField
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
 
+
     def __str__(self):
         return self.name
 
@@ -19,7 +20,7 @@ class Notes(models.Model):
     note = HTMLField('Note', null=True)
     date_created = models.DateField(auto_now_add=True, null=True)
     author = models.ForeignKey(User, verbose_name="User", on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category = models.ForeignKey('Category', on_delete=models.CASCADE)
     # cover = models.ImageField('Cover', upload_to='covers',  null=True, )
 
     def __str__(self):

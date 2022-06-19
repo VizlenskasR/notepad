@@ -5,9 +5,9 @@
 {% block content %}
 
 <h3 style="padding-bottom: 40px">Hello {{ user.get_username }}, here is your notes:</h3>
-{% if notes %}
-{% for note in notes %}
-    <a href="{% url 'note' note.id %}"><strong>Name:</strong> {{ note.title }}</a>
+{% if categories %}
+{% for category in categories %}
+<a href="">{{ category.name }}</a>
     <hr/>
 {% endfor %}
 {% else %}

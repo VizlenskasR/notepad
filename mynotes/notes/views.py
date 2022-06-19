@@ -9,11 +9,11 @@ from django.views.decorators.csrf import csrf_protect
 
 
 # Create your views here.
-# notes classes
-class NoteListView(LoginRequiredMixin, generic.ListView):
-    model = Notes
-    template_name = 'note_list.html'
-    context_object_name = 'notes'
+# classes related to notes
+# class NoteListView(LoginRequiredMixin, generic.ListView):
+#     model = Notes
+#     template_name = 'note_list.html'
+#     context_object_name = 'notes'
 
 
 class UserNotesListView(LoginRequiredMixin, generic.ListView):
@@ -35,10 +35,14 @@ class NoteCreateView(LoginRequiredMixin, generic.CreateView):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
-class NoteDetailView(LoginRequiredMixin, generic.DetailView):
+class NoteDetailView(LoginRequiredMixin, UserPassesTestMixin, generic.DetailView):
     model = Notes
     template_name = 'note.html'
     context_object_name = 'note'
+
+    def test_func(self):
+        notes = self.get_object()
+        return self.request.user == notes.author
 
 class NoteUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
     model = Notes
@@ -65,16 +69,33 @@ class NoteDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView
         note = self.get_object()
         return self.request.user == note.author
 
-#categories  classes
+#classes related to categories
+# class CaregoryListView(LoginRequiredMixin, generic.ListView):
+#     model = Category
+#     template_name = 'category_list.html'
+#     context_object_name = 'categories'
+#     success_url = "/notes/"
+#
+# class NoteDetailView(LoginRequiredMixin, UserPassesTestMixin, generic.DetailView):
+#     model = Category
+#     template_name = 'category.html'
+#     context_object_name = 'category'
+
+    # def test_func(self):
+    #     notes = self.get_object()
+    #     return self.request.user == notes.author
+
+
+
 class CategoryCreateView(LoginRequiredMixin, generic.CreateView):
     model = Category
+    fields = ['name']
     template_name = 'create_category.html'
     context_object_name = 'create_category'
     success_url = "/notes/"
 
-    fields = '__all__'
 
-
+# registration function
 @csrf_protect
 def register(request):
     if request.method == "POST":
@@ -97,6 +118,8 @@ def register(request):
                 else:
                     # jeigu viskas tvarkoje, sukuriame naują vartotoją
                     User.objects.create_user(username=username, email=email, password=password)
+                    return redirect('user_notes')
+
         else:
             messages.error(request, 'Slaptažodžiai nesutampa!')
             return redirect('register')
