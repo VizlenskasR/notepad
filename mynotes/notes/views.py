@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.views import generic
@@ -40,6 +40,30 @@ class NoteDetailView(LoginRequiredMixin, generic.DetailView):
     template_name = 'note.html'
     context_object_name = 'note'
 
+class NoteUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
+    model = Notes
+    fields = ['title', 'note', 'category']
+    success_url = "/notes/user_notes/"
+    template_name = 'note_form.html'
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+    def test_func(self):
+        notes = self.get_object()
+        return self.request.user == notes.author
+
+
+class NoteDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
+    model = Notes
+    success_url = "/notes/user_notes/"
+    template_name = 'note_delete.html'
+    context_object_name = 'note'
+
+    def test_func(self):
+        note = self.get_object()
+        return self.request.user == note.author
 
 #categories  classes
 class CategoryCreateView(LoginRequiredMixin, generic.CreateView):

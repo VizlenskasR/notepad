@@ -16,7 +16,6 @@ class Category(models.Model):
 
 class Notes(models.Model):
     title = models.CharField('Title name', max_length=255, help_text='Enter title')
-    # kolkas bus textfield, veliau pakeisiu i html
     note = HTMLField('Note', null=True)
     date_created = models.DateField(auto_now_add=True, null=True)
     author = models.ForeignKey(User, verbose_name="User", on_delete=models.CASCADE)
